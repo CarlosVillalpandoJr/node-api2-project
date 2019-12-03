@@ -2,11 +2,20 @@ const express = require('express');
 
 const Posts = require('./db');
 
-const router = express.Routes();
+const router = express.Router();
 
 router.use(express.json());
 
-
+// CRUD operations
+router.get('/', (req, res) => {
+    Posts.find()
+        .then(posts => {
+            res.status(200).json(posts)
+        })
+        .catch(error => {
+            res.status(500).json({ error: "The posts information could not be retrieved" })
+        })
+})
 
 
 
