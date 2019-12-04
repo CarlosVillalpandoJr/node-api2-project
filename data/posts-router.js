@@ -80,6 +80,29 @@ router.delete('/:id', (req, res) => {
         })
 })
 
+router.put('/:id', (req, res) => {
+    const id = req.params.id;
+    const postBody = req.body;
+    if (postBody.title && postBody.contents) {
+        Posts.update(id, postBody)
+            .then(id => {
+                if(id) {
+                    res.status(200).json({ postBody })
+                } else {
+                    res.status(404)
+                    .json({ message: "Post with ID not found" })
+                }
+            })
+            .catch(error => {
+                res.status(500)
+                    .json({ error: "Post info could not be modified" })
+            })
+    } else {
+        res.status(400)
+            .json({ errorMessage: "Provide title and content" })
+    }
+})
+
 
 
 module.exports = router;
