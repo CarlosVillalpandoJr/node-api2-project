@@ -62,6 +62,33 @@ router.post('/', (req, res) => {
     }
 })
 
+router.post('/:id/comments', (req, res) => {
+    const text = req.body.text;
+    const id = req.params.id;
+
+    if(text) {
+        Posts.findById(id)
+            .then(post => {
+                if(post.length > 0) {
+                    Posts.insertComment({ text: text, post_id: id })
+                        .then(add => {
+                            res.status(201).json({ add })
+                        })
+                        .catch(error => {
+                            res.status(500).json({ error: "Error while trying to save comment" })
+                        })
+                } else {
+                    res.status(404).json({ message: "Post with the specified ID does not exist" })
+                }
+            })
+            .catch(error => {
+                res.status(500).json({ error: "Post information could not be retrieved" })
+            })
+    } else {
+        res.status(400).json({ errorMessage: "Please provide text for the comment" })
+    }
+})
+
 router.delete('/:id', (req, res) => {
     const id = req.params.id;
     Posts.remove(id)
